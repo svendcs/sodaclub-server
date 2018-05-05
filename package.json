@@ -1,0 +1,21 @@
+{
+  "name": "sodaclub-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "DEBUG=express-sequelize node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "debug": "^3.1.0",
+    "express": "^4.16.2",
+    "sequelize": "^3.23.6",
+    "sequelize-cli": "^3.1.0",
+    "serve-favicon": "~2.3.0",
+    "sqlite3": "^3.0.8"
+  },
+  "devDependencies": {
+    "cross-env": "^3.1.3"
+  }
+}
