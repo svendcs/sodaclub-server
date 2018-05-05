@@ -30,9 +30,12 @@ module.exports = {
                 allowNull: false,
                 defaultValue: false,
             },
+            salt: Sequelize.STRING,
             password_hash: Sequelize.STRING,
             reset_key: Sequelize.STRING,
-            reset_key_date: Sequelize.DATE
+            reset_key_date: Sequelize.DATE,
+            token: Sequelize.STRING,
+            token_date: Sequelize.DATE
         });
     },
     down: (queryInterface, Sequelize) => {

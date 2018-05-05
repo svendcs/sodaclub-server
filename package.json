@@ -6,9 +6,9 @@
     "start": "DEBUG=express-sequelize node ./bin/www"
   },
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
+    "crypto": "^1.0.1",
     "debug": "^3.1.0",
     "express": "^4.16.2",
     "sequelize": "^3.23.6",
