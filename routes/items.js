@@ -8,16 +8,43 @@ router.get('/', function(req, res) {
     });
 });
 
-router.post('/:id/buy', function(req, res) {
-    res.send('Bought an item')
+router.post('/:item_id/buy', function(req, res) {
 });
 
-router.put('/:id/', function(req, res) {
-    res.send('Updated an item')
+router.put('/:item_id/', function(req, res) {
+    data = {
+        name: req.body.name,
+        price: req.body.price
+    }
+
+    models.Item.update(data, {
+        where: {
+            id: req.params.item_id
+        }
+    }).then(function() {
+        res.json({});
+    });
+});
+
+router.delete('/:item_id/', function(req, res) {
+    models.Item.destroy({
+        where: {
+            id: req.params.item_id
+        }
+    }).then(function() {
+        res.json({});
+    });
 });
 
 router.post('/', function(req, res) {
-    res.send('Created an item')
+    data = {
+        name: req.body.name,
+        price: req.body.price
+    }
+
+    models.Item.create(data).then(function() {
+        res.json({});
+    });
 });
 
 module.exports = router;
