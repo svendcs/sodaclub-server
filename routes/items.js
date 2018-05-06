@@ -4,7 +4,7 @@ var router  = express.Router();
 
 router.get('/', function(req, res) {
     models.Item.findAll().then(function(items) {
-        res.json(items);
+        res.render('item', {data: items});
     });
 });
 

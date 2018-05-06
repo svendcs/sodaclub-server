@@ -14,7 +14,12 @@ var announcements  = require('./routes/announcements');
 var app = express();
 
 // view engine setup
-// app.set('view engine', 'json');
+var viewEngine = require('express-json-views');
+app.engine('json', viewEngine({
+    // helpers: require('./views/helpers')
+}));
+app.set('views', './views');
+app.set('view engine', 'json');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));

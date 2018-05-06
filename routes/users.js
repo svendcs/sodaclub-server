@@ -70,7 +70,15 @@ router.get('/:user_id', function(req, res) {
         return;
     }
 
-    res.json({balance: req.user.balance});
+    res.render('user', {data: req.user});
+});
+
+router.use('/', require_auth);
+router.use('/', require_admin);
+router.get('/', function(req, res) {
+    models.User.findAll().then((users) => {
+        res.render('user', {data: users});
+    });
 });
 
 module.exports = router;
