@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var bearerToken = require('express-bearer-token');
+var env    = process.env.NODE_ENV || 'development';
+var mailer = require('express-mailer');
 
 var routes = require('./routes/index');
 var users  = require('./routes/users');
@@ -14,12 +16,12 @@ var announcements  = require('./routes/announcements');
 var app = express();
 
 // view engine setup
-var viewEngine = require('express-json-views');
-app.engine('json', viewEngine({
-    // helpers: require('./views/helpers')
-}));
 app.set('views', './views');
-app.set('view engine', 'json');
+app.set('view engine', 'pug');
+
+// setup mail
+var mailConfig = require(__dirname + '/config/mail.js')[env];
+mailer.extend(app, mailConfig);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));

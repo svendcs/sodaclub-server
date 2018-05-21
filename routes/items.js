@@ -1,15 +1,15 @@
 var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
+var Serializer = require('sequelize-to-json');
 
 var require_auth = require('../middleware/require_auth');
 var require_admin = require('../middleware/require_admin');
 
 router.use(require_auth);
-
 router.get('/', function(req, res) {
     models.Item.findAll().then(function(items) {
-        res.render('item', {data: items});
+        res.json(Serializer.serializeMany(items, models.Item, {include: ['id', 'name', 'price']}));
     });
 });
 
@@ -32,13 +32,13 @@ router.post('/:item_id/purchase', function(req, res) {
         }).then((test) => {
             req.user.balance -= item.price;
             req.user.save().then(() => {
-                res.render('user', {data: req.user});
+                res.json(Serializer.serializeMany(req.user, models.user, {include: ['id', 'balance']}));
             });
         });
     });
 });
 
-router.put('/:item_id/', function(req, res) {
+router.put('/:item_id/', require_admin, function(req, res) {
     data = {
         name: req.body.name,
         price: req.body.price
@@ -49,11 +49,11 @@ router.put('/:item_id/', function(req, res) {
             id: req.params.item_id
         }
     }).then((item) => {
-        res.send();
+        res.json({});
     });
 });
 
-router.post('/', function(req, res) {
+router.post('/', require_admin, function(req, res) {
     data = {
         name: req.body.name,
         price: req.body.price

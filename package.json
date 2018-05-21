@@ -13,8 +13,11 @@
     "express": "^4.16.2",
     "express-bearer-token": "^2.1.1",
     "express-json-views": "^0.1.1",
+    "express-mailer": "^0.3.1",
+    "pug": "^2.0.3",
     "sequelize": "^3.23.6",
     "sequelize-cli": "^3.1.0",
+    "sequelize-to-json": "^0.10.3",
     "serve-favicon": "~2.3.0",
     "sqlite3": "^3.0.8"
   },

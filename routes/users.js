@@ -1,7 +1,7 @@
 var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
-var crypto = require('crypto');
+var Serializer = require('sequelize-to-json');
 
 var require_auth = require('../middleware/require_auth');
 var require_admin = require('../middleware/require_admin');
@@ -40,9 +40,18 @@ router.post('/request_password_reset', function(req, res) {
     }).then(user => {
         user.generate_reset_key();
         user.save().then(() => {
-            res.json({
-                reset_key: user.reset_key,
-                id: user.id
+            // reset_key: user.reset_key,
+            // id: user.id
+            res.mailer.send('password-reset', {
+                to: user.email,
+                subject: 'Password reset to Soda Club',
+            }, function (err) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({success: false, error: 'There was an error sending the email'});
+                    return;
+                }
+                res.json({});
             });
         });
     });
@@ -70,14 +79,59 @@ router.get('/:user_id', function(req, res) {
         return;
     }
 
-    res.render('user', {data: req.user});
+    if (req.user.id == req.params.user_id) {
+        res.json(new Serializer(models.User, {include: ['id', 'email', 'balance', 'is_admin']}).serialize(req.user));
+    }
+    else {
+        models.User.findById(req.params.user_id).then(user => {
+            if (user == null) {
+                res.status(404).json({success: false, error: "User does not exist."});
+            }
+            res.json(new Serializer(models.User, {include: ['id', 'email', 'balance', 'is_admin']}).serialize(user));
+        });
+    }
 });
 
 router.use('/', require_auth);
 router.use('/', require_admin);
 router.get('/', function(req, res) {
     models.User.findAll().then((users) => {
-        res.render('user', {data: users});
+        res.json(Serializer.serializeMany(users, models.User, {include: ['id', 'email', 'balance', 'is_admin']}));
+    });
+});
+
+router.post('/', function(req, res) {
+    user = models.User.build({
+        email: req.body.email, 
+    });
+    user.generate_reset_key();
+    user.save().then(() => {
+        res.mailer.send('user-invite', {
+            to: user.email,
+            subject: 'Invite to Soda Club',
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                res.status(500).json({success: false, error: 'There was an error sending the email'});
+                return;
+            }
+            res.json({});
+        });
+    });
+});
+
+router.put('/:user_id/', function(req, res) {
+    data = {
+        email: req.body.email,
+        balance: req.body.balance
+    }
+
+    models.User.update(data, {
+        where: {
+            id: req.params.user_id
+        }
+    }).then((user) => {
+        res.send({});
     });
 });
 
