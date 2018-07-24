@@ -14,7 +14,7 @@ module.exports = {
             salt: buf,
             createdAt: new Date(),
             updatedAt: new Date(),
-            balance: 100
+            balance: 1000
         }], {});
     },
 
