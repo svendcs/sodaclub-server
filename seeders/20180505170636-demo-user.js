@@ -13,7 +13,8 @@ module.exports = {
             password_hash: hash.update(buf + 'password').digest().toString('hex'),
             salt: buf,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            balance: 100
         }], {});
     },
 
