@@ -14,12 +14,15 @@
     "express-bearer-token": "^2.1.1",
     "express-json-views": "^0.1.1",
     "express-mailer": "^0.3.1",
+    "express-sequelize": "0.0.4",
+    "morgan": "^1.9.0",
     "pug": "^2.0.3",
     "sequelize": "^3.23.6",
     "sequelize-cli": "^3.1.0",
     "sequelize-to-json": "^0.10.3",
     "serve-favicon": "~2.3.0",
-    "sqlite3": "^3.0.8"
+    "sqlite": "^2.9.2",
+    "sqlite3": "^4.0.2"
   },
   "devDependencies": {
     "cross-env": "^3.1.3"
