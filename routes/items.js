@@ -21,7 +21,7 @@ router.post('/:item_id/purchase', function(req, res) {
         }
 
         if (item.price > req.user.balance) {
-            res.status(503).json({"success": false, "error": "the user can not afford the item."});
+            res.status(400).json({"success": false, "error": "the user can not afford the item."});
             return;
         }
 
