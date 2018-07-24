@@ -10,7 +10,7 @@ router.post('/login', function(req, res) {
     models.User.find({
         where: {email: req.body.email}
     }).then(user => {
-        if(user.confirm_password(req.body.password)) {
+        if(user != null && user.confirm_password(req.body.password)) {
             user.generate_token();
             user.save().then(() => {
                 res.json({
@@ -21,7 +21,7 @@ router.post('/login', function(req, res) {
             });
         }
         else {
-            res.json('no');
+            res.status(401).json({success: false, error: "Wrong username or password"});
         }
     });
 });
@@ -47,7 +47,6 @@ router.post('/request_password_reset', function(req, res) {
                 subject: 'Password reset to Soda Club',
             }, function (err) {
                 if (err) {
-                    console.log(err);
                     res.status(500).json({success: false, error: 'There was an error sending the email'});
                     return;
                 }
@@ -111,7 +110,6 @@ router.post('/', function(req, res) {
             subject: 'Invite to Soda Club',
         }, function (err) {
             if (err) {
-                console.log(err);
                 res.status(500).json({success: false, error: 'There was an error sending the email'});
                 return;
             }
