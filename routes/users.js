@@ -102,7 +102,7 @@ router.get('/', function(req, res) {
 
 router.post('/', function(req, res) {
     user = models.User.build({
-        email: req.body.email, 
+        email: req.body.email,
     });
     user.generate_reset_key();
     user.save().then(() => {
@@ -120,18 +120,19 @@ router.post('/', function(req, res) {
     });
 });
 
-router.put('/:user_id/', function(req, res) {
-    data = {
-        email: req.body.email,
-        balance: req.body.balance
+router.post('/:user_id/deposit', require_auth, require_admin, function(req, res) {
+    if (req.body.amount == null) {
+        res.status(400).json({success: false, error: "Item does not exist."});
+        return;
     }
 
-    models.User.update(data, {
-        where: {
-            id: req.params.user_id
-        }
-    }).then((user) => {
-        res.send({});
+    req.body.amount = parseInt(req.body.amount);
+
+    models.User.findById(req.params.user_id).then(user => {
+        user.balance += req.body.amount;
+        user.save().then(() => {
+            res.json({});
+        });
     });
 });
 
