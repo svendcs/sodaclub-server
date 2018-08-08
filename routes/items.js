@@ -32,7 +32,9 @@ router.post('/:item_id/purchase', function(req, res) {
         }).then((test) => {
             req.user.balance -= item.price;
             req.user.save().then(() => {
-                res.json(Serializer.serializeMany(req.user, models.user, {include: ['id', 'balance']}));
+                res.json({
+                    balance: req.user.balance
+                });
             });
         });
     });

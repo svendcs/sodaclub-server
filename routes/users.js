@@ -6,6 +6,9 @@ var Serializer = require('sequelize-to-json');
 var require_auth = require('../middleware/require_auth');
 var require_admin = require('../middleware/require_admin');
 
+var env = process.env.NODE_ENV || 'development';
+var frontendConfig = require('../config/frontend.js')[env];
+
 router.post('/login', function(req, res) {
     models.User.find({
         where: {email: req.body.email}
@@ -34,19 +37,26 @@ router.post('/logout', function(req, res) {
     });
 });
 
-router.post('/request_password_reset', function(req, res) {
+router.post('/request_password_reset', require_auth, require_admin, function(req, res) {
     models.User.find({
         where: {email: req.body.email}
     }).then(user => {
+        if (user == null) {
+            res.status(404).json({success: false, error: 'User does not exist'});
+            return;
+        }
+
         user.generate_reset_key();
         user.save().then(() => {
             // reset_key: user.reset_key,
             // id: user.id
             res.mailer.send('password-reset', {
                 to: user.email,
-                subject: 'Password reset to Soda Club',
+                subject: 'Soda Club password reset',
+                reset_link: frontendConfig.password_reset_link + user.id + '/' + user.reset_key
             }, function (err) {
                 if (err) {
+                    console.log(err)
                     res.status(500).json({success: false, error: 'There was an error sending the email'});
                     return;
                 }
@@ -65,8 +75,13 @@ router.post('/:user_id/password_reset', function(req, res) {
 
         user.password = req.body.password;
         user.reset_key = null;
+        user.generate_token();
         user.save().then(() => {
-            res.json({success: true});
+            res.json({
+                token: user.token,
+                id: user.id,
+                balance: user.balance
+            });
         });
     });
 });
@@ -91,36 +106,46 @@ router.get('/:user_id', function(req, res) {
     }
 });
 
-router.use('/', require_auth);
-router.use('/', require_admin);
-router.get('/', function(req, res) {
+router.get('/', require_auth, require_admin, function(req, res) {
     models.User.findAll().then((users) => {
         res.json(Serializer.serializeMany(users, models.User, {include: ['id', 'email', 'balance', 'is_admin']}));
     });
 });
 
-router.post('/', function(req, res) {
-    user = models.User.build({
-        email: req.body.email,
-    });
-    user.generate_reset_key();
-    user.save().then(() => {
-        res.mailer.send('user-invite', {
-            to: user.email,
-            subject: 'Invite to Soda Club',
-        }, function (err) {
-            if (err) {
-                res.status(500).json({success: false, error: 'There was an error sending the email'});
-                return;
-            }
-            res.json({});
+router.post('/', require_auth, require_admin, function(req, res) {
+    models.User.find({
+        where: {email: req.body.email}
+    }).then(user => {
+        if (user != null) {
+            res.status(401).json({success: false, error: 'A user with that email already exists.'});
+            return;
+        }
+
+        user = models.User.build({
+            email: req.body.email,
+        });
+
+        user.generate_reset_key();
+        user.save().then(() => {
+            res.mailer.send('user-invite', {
+                to: user.email,
+                subject: 'Invite to the MADALGO Soda Club',
+                reset_link: frontendConfig.password_reset_link + user.id + '/' + user.reset_key,
+                info_link: frontendConfig.info_link
+            }, function (err) {
+                if (err) {
+                    res.status(500).json({success: false, error: 'There was an error sending the email'});
+                    return;
+                }
+                res.json({});
+            });
         });
     });
 });
 
 router.post('/:user_id/deposit', require_auth, require_admin, function(req, res) {
     if (req.body.amount == null) {
-        res.status(400).json({success: false, error: "Item does not exist."});
+        res.status(400).json({success: false, error: "User does not exist."});
         return;
     }
 
