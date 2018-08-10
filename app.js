@@ -31,18 +31,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(express.static(path.join(__dirname, 'public')));
 
-
-app.use('/api', routes);
-app.use('/api/users', users);
-app.use('/api/items', items);
-app.use('/api/announcements', announcements);
+var router = express.Router();
+router.use('/api', routes);
+router.use('/api/users', users);
+router.use('/api/items', items);
+router.use('/api/announcements', announcements);
 
 // Serve static files
-app.use(express.static(path.join(__dirname, 'build')));
+router.use(express.static(path.join(__dirname, 'build')));
 
-app.get('/*', function (req, res) {
+router.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
+app.use('/sodaclub', router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
