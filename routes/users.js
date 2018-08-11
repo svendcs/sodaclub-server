@@ -123,6 +123,7 @@ router.post('/', require_auth, require_admin, function(req, res) {
 
         user = models.User.build({
             email: req.body.email,
+            balance: req.body.balance,
         });
 
         user.generate_reset_key();
