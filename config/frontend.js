@@ -4,9 +4,11 @@ module.exports = {
       info_link: 'http://localhost:3000/'
   },
   test: {
-      // TODO
+      password_reset_link: 'https://apps.cs.au.dk/sodaclub/password-reset/',
+      info_link: 'https://apps.cs.au.dk/sodaclub'
   },
   production: {
-      // TODO
+      password_reset_link: 'https://apps.cs.au.dk/sodaclub/password-reset/',
+      info_link: 'https://apps.cs.au.dk/sodaclub'
   }
 };
