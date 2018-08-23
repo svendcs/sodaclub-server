@@ -1,7 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var Purchase = sequelize.define('Purchase', {
-    userId: DataTypes.INTEGER
+    userId: DataTypes.INTEGER,
+    price: DataTypes.INTEGER,
+    refunded: DataTypes.BOOLEAN
   }, {
     classMethods: {
       associate: function(models) {

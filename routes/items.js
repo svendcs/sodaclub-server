@@ -28,7 +28,8 @@ router.post('/:item_id/purchase', function(req, res) {
         // TODO: ensure atomicity
         models.Purchase.create({
             userId: req.user.id,
-            itemId: item.id
+            itemId: item.id,
+            price: item.price
         }).then((test) => {
             req.user.balance -= item.price;
             req.user.save().then(() => {

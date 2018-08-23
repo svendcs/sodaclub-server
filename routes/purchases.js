@@ -7,7 +7,7 @@ var require_auth = require('../middleware/require_auth');
 var require_admin = require('../middleware/require_admin');
 
 const schema = {
-    include: ['id', 'user', 'item'],
+    include: ['id', 'price', 'refunded', 'user', 'item'],
     assoc: {
         user: {
             include: ['id', 'email']
