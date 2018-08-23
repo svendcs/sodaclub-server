@@ -11,6 +11,7 @@ var mailer = require('express-mailer');
 var routes = require('./routes/index');
 var users  = require('./routes/users');
 var items  = require('./routes/items');
+var purchases  = require('./routes/purchases');
 
 var app = express();
 
@@ -34,6 +35,7 @@ var router = express.Router();
 router.use('/api', routes);
 router.use('/api/users', users);
 router.use('/api/items', items);
+router.use('/api/purchases', purchases);
 
 // Serve static files
 router.use(express.static(path.join(__dirname, 'build')));
