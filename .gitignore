@@ -3,3 +3,6 @@ npm-debug.log
 *.sqlite
 package-lock.json
 build
+config/mail.js
+config/frontend.js
+config/config.js
