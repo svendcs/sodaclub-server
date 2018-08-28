@@ -6,10 +6,14 @@ var Serializer = require('sequelize-to-json');
 var require_auth = require('../middleware/require_auth');
 var require_admin = require('../middleware/require_admin');
 
+const schema = {
+    include: ['id', 'name', 'price', 'enabled'],
+}
+
 router.use(require_auth);
 router.get('/', function(req, res) {
     models.Item.findAll().then(function(items) {
-        res.json(Serializer.serializeMany(items, models.Item, {include: ['id', 'name', 'price']}));
+        res.json(Serializer.serializeMany(items, models.Item, schema));
     });
 });
 
@@ -37,6 +41,44 @@ router.post('/:item_id/purchase', function(req, res) {
                     balance: req.user.balance
                 });
             });
+        });
+    });
+});
+
+router.post('/:item_id/enable', require_admin, function(req, res) {
+    models.Item.findById(req.params.item_id).then((item) => {
+        if (item == null) {
+            res.status(404).json({success: false, error: "Item does not exist."});
+            return;
+        }
+
+        if (item.enabled) {
+            res.status(400).json({"success": false, "error": "Item is already enabled."});
+            return;
+        }
+
+        item.enabled = true;
+        item.save().then(() => {
+            res.json({});
+        });
+    });
+});
+
+router.post('/:item_id/disable', require_admin, function(req, res) {
+    models.Item.findById(req.params.item_id).then((item) => {
+        if (item == null) {
+            res.status(404).json({success: false, error: "Item does not exist."});
+            return;
+        }
+
+        if (!item.enabled) {
+            res.status(400).json({"success": false, "error": "Item is already disabled."});
+            return;
+        }
+
+        item.enabled = false;
+        item.save().then(() => {
+            res.json({});
         });
     });
 });
