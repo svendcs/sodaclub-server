@@ -1,9 +1,18 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var Purchase = sequelize.define('Purchase', {
-    userId: DataTypes.INTEGER,
-    price: DataTypes.INTEGER,
-    refunded: DataTypes.BOOLEAN
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    price: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    refunded: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+    },
   }, {
     classMethods: {
       associate: function(models) {
