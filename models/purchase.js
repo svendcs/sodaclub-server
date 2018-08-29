@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     refunded: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
     },
   }, {
     classMethods: {
